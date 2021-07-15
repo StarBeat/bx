@@ -184,7 +184,7 @@
 #	include <sys/cdefs.h> // Defines __BIONIC__ and includes android/api-level.h
 #	undef  BX_PLATFORM_ANDROID
 #	define BX_PLATFORM_ANDROID __ANDROID_API__
-#elif defined(__OHOS__)
+#elif defined(__HarmonyOS__)
 #	include <sys/cdefs.h> 
 #	undef  BX_PLATFORM_OHOS
 #	define BX_PLATFORM_OHOS __OHOS_API__

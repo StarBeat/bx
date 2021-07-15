@@ -206,7 +206,7 @@ namespace Catch {
 
 ////////////////////////////////////////////////////////////////////////////////
 // OHOS LOG 
-#if defined(__OHOS__)
+#if defined(__HarmonyOS__)
 #    define CATCH_INTERNAL_CONFIG_OHOS_LOGWRITE
 #endif
 
