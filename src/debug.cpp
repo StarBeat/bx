@@ -13,6 +13,8 @@
 #	include "crt0.h"
 #elif BX_PLATFORM_ANDROID
 #	include <android/log.h>
+#elif BX_PLATFORM_OHOS
+#	include <hilog/log.h>
 #elif  BX_PLATFORM_WINDOWS \
 	|| BX_PLATFORM_WINRT   \
 	|| BX_PLATFORM_XBOXONE
@@ -63,6 +65,8 @@ namespace bx
 #		define BX_ANDROID_LOG_TAG ""
 #	endif // BX_ANDROID_LOG_TAG
 		__android_log_write(ANDROID_LOG_DEBUG, BX_ANDROID_LOG_TAG, _out);
+#elif BX_PLATFORM_OHOS
+		HILOG_INFO(LOG_APP, _out);
 #elif  BX_PLATFORM_WINDOWS \
 	|| BX_PLATFORM_WINRT   \
 	|| BX_PLATFORM_XBOXONE

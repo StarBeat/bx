@@ -47,6 +47,7 @@
 
 // Platform
 #define BX_PLATFORM_ANDROID    0
+#define BX_PLATFORM_OHOS	   0
 #define BX_PLATFORM_BSD        0
 #define BX_PLATFORM_EMSCRIPTEN 0
 #define BX_PLATFORM_HAIKU      0
@@ -183,6 +184,10 @@
 #	include <sys/cdefs.h> // Defines __BIONIC__ and includes android/api-level.h
 #	undef  BX_PLATFORM_ANDROID
 #	define BX_PLATFORM_ANDROID __ANDROID_API__
+#elif defined(__OHOS__)
+#	include <sys/cdefs.h> 
+#	undef  BX_PLATFORM_OHOS
+#	define BX_PLATFORM_OHOS __OHOS_API__
 #elif defined(__VCCOREVER__)
 // RaspberryPi compiler defines __linux__
 #	undef  BX_PLATFORM_RPI
@@ -259,6 +264,7 @@
 ///
 #define BX_PLATFORM_POSIX (0   \
 	||  BX_PLATFORM_ANDROID    \
+	||  BX_PLATFORM_OHOS	   \
 	||  BX_PLATFORM_BSD        \
 	||  BX_PLATFORM_EMSCRIPTEN \
 	||  BX_PLATFORM_HAIKU      \
@@ -274,6 +280,7 @@
 ///
 #define BX_PLATFORM_NONE !(0   \
 	||  BX_PLATFORM_ANDROID    \
+	||  BX_PLATFORM_OHOS	   \
 	||  BX_PLATFORM_BSD        \
 	||  BX_PLATFORM_EMSCRIPTEN \
 	||  BX_PLATFORM_HAIKU      \
@@ -315,6 +322,7 @@
 ///
 #define BX_PLATFORM_OS_MOBILE   (0 \
 	||  BX_PLATFORM_ANDROID        \
+	||  BX_PLATFORM_OHOS           \
 	||  BX_PLATFORM_IOS            \
 	)
 
@@ -357,6 +365,8 @@
 #if BX_PLATFORM_ANDROID
 #	define BX_PLATFORM_NAME "Android " \
 				BX_STRINGIZE(BX_PLATFORM_ANDROID)
+#elif BX_PLATFORM_OHOS
+#	define BX_PLATFORM_NAME "Ohos"
 #elif BX_PLATFORM_BSD
 #	define BX_PLATFORM_NAME "BSD"
 #elif BX_PLATFORM_EMSCRIPTEN

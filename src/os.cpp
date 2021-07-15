@@ -18,6 +18,7 @@
 #	include <windows.h>
 #	include <psapi.h>
 #elif  BX_PLATFORM_ANDROID    \
+	|| BX_PLATFORM_OHOS       \
 	|| BX_PLATFORM_BSD        \
 	|| BX_PLATFORM_EMSCRIPTEN \
 	|| BX_PLATFORM_HAIKU      \
@@ -42,7 +43,7 @@
 #		include <dlfcn.h> // dlopen, dlclose, dlsym
 #	endif // !BX_PLATFORM_PS4
 
-#	if BX_PLATFORM_ANDROID
+#	if BX_PLATFORM_ANDROID || BX_PLATFORM_OHOS
 #		include <malloc.h> // mallinfo
 #	elif   BX_PLATFORM_LINUX     \
 		|| BX_PLATFORM_RPI
@@ -115,7 +116,7 @@ namespace bx
 
 	size_t getProcessMemoryUsed()
 	{
-#if BX_PLATFORM_ANDROID
+#if BX_PLATFORM_ANDROID || BX_PLATFORM_OHOS
 		struct mallinfo mi = mallinfo();
 		return mi.uordblks;
 #elif  BX_PLATFORM_LINUX \

@@ -75,6 +75,12 @@ project "bx.test"
 		linkoptions {
 			"-shared",
 		}
+	
+	configuration { "ohos*" }
+		targetextension ".so"
+		linkoptions {
+			"-shared",
+		}
 
 	configuration { "linux-*" }
 		links {
@@ -116,6 +122,12 @@ project "bx.bench"
 		}
 
 	configuration { "android*" }
+		targetextension ".so"
+		linkoptions {
+			"-shared",
+		}
+		
+	configuration { "ohos*" }
 		targetextension ".so"
 		linkoptions {
 			"-shared",

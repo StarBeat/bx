@@ -205,6 +205,12 @@ namespace Catch {
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
+// OHOS LOG 
+#if defined(__OHOS__)
+#    define CATCH_INTERNAL_CONFIG_OHOS_LOGWRITE
+#endif
+
+////////////////////////////////////////////////////////////////////////////////
 // Not all Windows environments support SEH properly
 #if defined(__MINGW32__)
 #    define CATCH_INTERNAL_CONFIG_NO_WINDOWS_SEH
@@ -402,6 +408,10 @@ namespace Catch {
 
 #if defined(CATCH_INTERNAL_CONFIG_ANDROID_LOGWRITE) && !defined(CATCH_CONFIG_NO_ANDROID_LOGWRITE) && !defined(CATCH_CONFIG_ANDROID_LOGWRITE)
 #  define CATCH_CONFIG_ANDROID_LOGWRITE
+#endif
+
+#if defined(CATCH_INTERNAL_CONFIG_OHOS_LOGWRITE) && !defined(CATCH_CONFIG_OHOS_LOGWRITE)
+#  define CATCH_CONFIG_OHOS_LOGWRITE
 #endif
 
 #if defined(CATCH_INTERNAL_CONFIG_GLOBAL_NEXTAFTER) && !defined(CATCH_CONFIG_NO_GLOBAL_NEXTAFTER) && !defined(CATCH_CONFIG_GLOBAL_NEXTAFTER)
@@ -10353,6 +10363,14 @@ namespace Catch {
     namespace Catch {
         void writeToDebugConsole( std::string const& text ) {
             __android_log_write( ANDROID_LOG_DEBUG, "Catch", text.c_str() );
+        }
+    }
+
+#elif defined(CATCH_CONFIG_OHOS_LOGWRITE)
+#include <hilog/log.h>
+    namespace Catch {
+        void writeToDebugConsole( std::string const& text ) {
+            HILOG_INFO(LOG_APP, "Catch", text.c_str() );
         }
     }
 

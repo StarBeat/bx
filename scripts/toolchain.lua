@@ -52,6 +52,9 @@ function toolchain(_buildDir, _libDir)
 			{ "android-arm",     "Android - ARM"              },
 			{ "android-arm64",   "Android - ARM64"            },
 			{ "android-x86",     "Android - x86"              },
+			{ "ohos-arm",     "Ohos - ARM"              },
+			{ "ohos-arm64",   "Ohos - ARM64"            },
+			{ "ohos-x86",     "Ohos - x86"              },
 			{ "wasm2js",         "Emscripten/Wasm2JS"         },
 			{ "wasm",            "Emscripten/Wasm"            },
 			{ "freebsd",         "FreeBSD"                    },
@@ -116,6 +119,12 @@ function toolchain(_buildDir, _libDir)
 	}
 
 	newoption {
+		trigger     = "with-ohos",
+		value       = "#",
+		description = "Set Ohos platform version (default: 2.0).",
+	}
+
+	newoption {
 		trigger     = "with-ios",
 		value       = "#",
 		description = "Set iOS target version (default: 8.0).",
@@ -170,6 +179,11 @@ function toolchain(_buildDir, _libDir)
 		androidPlatform = "android-" .. _OPTIONS["with-android"]
 	end
 
+	local ohosPlatform = "ohos-24"
+	if _OPTIONS["with-ohos"] then
+		ohosPlatform = "ohos-" .. _OPTIONS["with-ohos"]
+	end
+
 	local iosPlatform = ""
 	if _OPTIONS["with-ios"] then
 		iosPlatform = _OPTIONS["with-ios"]
@@ -207,7 +221,7 @@ function toolchain(_buildDir, _libDir)
 			print("GCC flavor must be specified!")
 			os.exit(1)
 		end
-
+		// TODO:x.yang 
 		if "android-arm" == _OPTIONS["gcc"] then
 
 			if not os.getenv("ANDROID_NDK_ARM")
