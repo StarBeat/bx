@@ -11,6 +11,7 @@ all:
 	$(GENIE) --gcc=android-arm     gmake
 	$(GENIE) --gcc=android-arm64   gmake
 	$(GENIE) --gcc=android-x86     gmake
+	$(GENIE) --gcc=ohos-arm64      gmake
 	$(GENIE) --gcc=mingw-gcc       gmake
 	$(GENIE) --gcc=linux-gcc       gmake
 	$(GENIE) --gcc=haiku           gmake
@@ -44,6 +45,14 @@ android-x86-debug: .build/projects/gmake-android-x86
 android-x86-release: .build/projects/gmake-android-x86
 	make -R -C .build/projects/gmake-android-x86 config=release
 android-x86: android-x86-debug android-x86-release
+
+.build/projects/gmake-ohos-arm64:
+	$(GENIE) --gcc=ohos-arm64 gmake
+ohos-arm64-debug: .build/projects/gmake-ohos-arm64
+	make -R -C .build/projects/gmake-ohos-arm64 config=debug
+ohos-arm64-release: .build/projects/gmake-ohos-arm64
+	make -R -C .build/projects/gmake-ohos-arm64 config=release
+ohos-arm64: ohos-arm64-debug ohos-arm64-release
 
 .build/projects/gmake-linux:
 	$(GENIE) --gcc=linux-gcc gmake

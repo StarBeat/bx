@@ -866,7 +866,7 @@ function toolchain(_buildDir, _libDir)
 		linkoptions {
 			"-Wl,--gc-sections",
 		}
-
+--TODO:x.yang
 	configuration { "android-*" }
 		targetprefix ("lib")
 		flags {
