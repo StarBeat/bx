@@ -179,7 +179,7 @@ function toolchain(_buildDir, _libDir)
 		androidPlatform = "android-" .. _OPTIONS["with-android"]
 	end
 
-	local ohosPlatform = "ohos-24"
+	local ohosPlatform = "ohos-2"
 	if _OPTIONS["with-ohos"] then
 		ohosPlatform = "ohos-" .. _OPTIONS["with-ohos"]
 	end
@@ -221,7 +221,7 @@ function toolchain(_buildDir, _libDir)
 			print("GCC flavor must be specified!")
 			os.exit(1)
 		end
-		// TODO:x.yang 
+		
 		if "android-arm" == _OPTIONS["gcc"] then
 
 			if not os.getenv("ANDROID_NDK_ARM")
@@ -266,6 +266,50 @@ function toolchain(_buildDir, _libDir)
 			premake.gcc.llvm = true
 			location (path.join(_buildDir, "projects", _ACTION .. "-android-x86"))
 
+		elseif "ohos-arm" == _OPTIONS["gcc"] then
+
+			if not os.getenv("OHOS_NDK_ARM")
+			or not os.getenv("OHOS_NDK_CLANG")
+			or not os.getenv("OHOS_NDK_ROOT") then
+				print("Set OHOS_NDK_CLANG, OHOS_NDK_ARM, and OHOS_NDK_ROOT environment variables.")
+			end
+	
+			premake.gcc.cc   = "$(OHOS_NDK_CLANG)/bin/clang"
+			premake.gcc.cxx  = "$(OHOS_NDK_CLANG)/bin/clang++"
+			premake.gcc.ar   = "$(OHOS_NDK_ARM)/bin/arm-linux-ohoseabi-ar"
+	
+			premake.gcc.llvm = true
+			location (path.join(_buildDir, "projects", _ACTION .. "-ohos-arm"))
+	
+		elseif "ohos-arm64" == _OPTIONS["gcc"] then
+	
+			if not os.getenv("OHOS_NDK_ARM64")
+			or not os.getenv("OHOS_NDK_CLANG")
+			or not os.getenv("OHOS_NDK_ROOT") then
+				print("Set OHOS_NDK_CLANG, OHOS_NDK_ARM64, and OHOS_NDK_ROOT environment variables.")
+			end
+	
+			premake.gcc.cc   = "$(OHOS_NDK_CLANG)/bin/clang"
+			premake.gcc.cxx  = "$(OHOS_NDK_CLANG)/bin/clang++"
+			premake.gcc.ar   = "$(OHOS_NDK_ARM64)/bin/aarch64-linux-ohos-ar"
+
+			premake.gcc.llvm = true
+			location (path.join(_buildDir, "projects", _ACTION .. "-ohos-arm64"))
+
+		elseif "ohos-x86" == _OPTIONS["gcc"] then
+	
+			if not os.getenv("OHOS_NDK_X86")
+			or not os.getenv("OHOS_NDK_CLANG")
+			or not os.getenv("OHOS_NDK_ROOT") then
+				print("SetOHOS_NDK_CLANG, OHOS_NDK_X86, and OHOS_NDK_ROOT environment variables.")
+			end
+	
+			premake.gcc.cc   = "$(OHOS_NDK_CLANG)/bin/clang"
+			premake.gcc.cxx  = "$(OHOS_NDK_CLANG)/bin/clang++"
+			premake.gcc.ar   = "$(OHOS_NDK_X86)/bin/i686-linux-ohos-ar"
+			premake.gcc.llvm = true
+			location (path.join(_buildDir, "projects", _ACTION .. "-ohos-x86"))
+---							
 		elseif "wasm2js" == _OPTIONS["gcc"] or "wasm" == _OPTIONS["gcc"] then
 
 			if not os.getenv("EMSCRIPTEN") then

@@ -187,6 +187,7 @@
 #elif defined(__HarmonyOS__)
 #	include <sys/cdefs.h> 
 #	undef  BX_PLATFORM_OHOS
+#	define __OHOS_API__ 2
 #	define BX_PLATFORM_OHOS __OHOS_API__
 #elif defined(__VCCOREVER__)
 // RaspberryPi compiler defines __linux__
