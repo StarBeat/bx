@@ -52,9 +52,7 @@ function toolchain(_buildDir, _libDir)
 			{ "android-arm",     "Android - ARM"              },
 			{ "android-arm64",   "Android - ARM64"            },
 			{ "android-x86",     "Android - x86"              },
-			{ "ohos-arm",     "Ohos - ARM"              },
 			{ "ohos-arm64",   "Ohos - ARM64"            },
-			{ "ohos-x86",     "Ohos - x86"              },
 			{ "wasm2js",         "Emscripten/Wasm2JS"         },
 			{ "wasm",            "Emscripten/Wasm"            },
 			{ "freebsd",         "FreeBSD"                    },
@@ -265,21 +263,6 @@ function toolchain(_buildDir, _libDir)
 			premake.gcc.ar   = "$(ANDROID_NDK_X86)/bin/i686-linux-android-ar"
 			premake.gcc.llvm = true
 			location (path.join(_buildDir, "projects", _ACTION .. "-android-x86"))
-
-		elseif "ohos-arm" == _OPTIONS["gcc"] then
-
-			if not os.getenv("OHOS_NDK_ARM")
-			or not os.getenv("OHOS_NDK_CLANG")
-			or not os.getenv("OHOS_NDK_ROOT") then
-				print("Set OHOS_NDK_CLANG, OHOS_NDK_ARM, and OHOS_NDK_ROOT environment variables.")
-			end
-	
-			premake.gcc.cc   = "$(OHOS_NDK_CLANG)/bin/clang"
-			premake.gcc.cxx  = "$(OHOS_NDK_CLANG)/bin/clang++"
-			premake.gcc.ar   = "$(OHOS_NDK_ARM)/bin/arm-linux-ohoseabi-ar"
-	
-			premake.gcc.llvm = true
-			location (path.join(_buildDir, "projects", _ACTION .. "-ohos-arm"))
 	
 		elseif "ohos-arm64" == _OPTIONS["gcc"] then
 	
@@ -291,25 +274,11 @@ function toolchain(_buildDir, _libDir)
 	
 			premake.gcc.cc   = "$(OHOS_NDK_CLANG)/bin/clang"
 			premake.gcc.cxx  = "$(OHOS_NDK_CLANG)/bin/clang++"
-			premake.gcc.ar   = "$(OHOS_NDK_ARM64)/bin/aarch64-linux-ohos-ar"
+			premake.gcc.ar   = "$(OHOS_NDK_ARM64)/bin/llvm-ar"
 
 			premake.gcc.llvm = true
 			location (path.join(_buildDir, "projects", _ACTION .. "-ohos-arm64"))
-
-		elseif "ohos-x86" == _OPTIONS["gcc"] then
-	
-			if not os.getenv("OHOS_NDK_X86")
-			or not os.getenv("OHOS_NDK_CLANG")
-			or not os.getenv("OHOS_NDK_ROOT") then
-				print("SetOHOS_NDK_CLANG, OHOS_NDK_X86, and OHOS_NDK_ROOT environment variables.")
-			end
-	
-			premake.gcc.cc   = "$(OHOS_NDK_CLANG)/bin/clang"
-			premake.gcc.cxx  = "$(OHOS_NDK_CLANG)/bin/clang++"
-			premake.gcc.ar   = "$(OHOS_NDK_X86)/bin/i686-linux-ohos-ar"
-			premake.gcc.llvm = true
-			location (path.join(_buildDir, "projects", _ACTION .. "-ohos-x86"))
----							
+						
 		elseif "wasm2js" == _OPTIONS["gcc"] or "wasm" == _OPTIONS["gcc"] then
 
 			if not os.getenv("EMSCRIPTEN") then
@@ -866,7 +835,7 @@ function toolchain(_buildDir, _libDir)
 		linkoptions {
 			"-Wl,--gc-sections",
 		}
---TODO:x.yang
+
 	configuration { "android-*" }
 		targetprefix ("lib")
 		flags {
@@ -988,6 +957,70 @@ function toolchain(_buildDir, _libDir)
 			path.join("$(ANDROID_NDK_ROOT)/platforms", androidPlatform, "arch-x86/usr/lib/crtbegin_so.o"),
 			path.join("$(ANDROID_NDK_ROOT)/platforms", androidPlatform, "arch-x86/usr/lib/crtend_so.o"),
 			"-target i686-none-linux-android",
+		}
+	
+	configuration { "ohos-*" }
+		targetprefix ("lib")
+		flags {
+			"NoImportLib",
+		}
+		includedirs {
+			"$(OHOS_NDK_ROOT)/llvm/lib/aarch64-linux-ohos/c++",
+			"${OHOS_NDK_ROOT}/sysroot/usr/include",
+		}
+		linkoptions {
+			"-nostdlib",
+		}
+		links {
+			"c",
+			"dl",
+			"m",
+			"hilog_ndk.z",
+			"c++",
+		}
+		buildoptions {
+			"-fPIC",
+			"-no-canonical-prefixes",
+			"-Wa,--noexecstack",
+			"-fstack-protector-strong",
+			"-ffunction-sections",
+			"-Wunused-value",
+			"-Wundef",
+		}
+		linkoptions {
+			"-no-canonical-prefixes",
+			"-Wl,--no-undefined",
+			"-Wl,-z,noexecstack",
+			"-Wl,-z,relro",
+			"-Wl,-z,now",
+		}
+	
+	configuration { "ohos-arm64" }
+		targetdir (path.join(_buildDir, "ohos-arm64/bin"))
+		objdir (path.join(_buildDir, "ohos-arm64/obj"))
+		libdirs {
+			"$(OHOS_NDK_ROOT)/sysroot/usr/lib/aarch64-linux-ohos",
+			"$(OHOS_NDK_ROOT)/llvm/lib/aarch64-linux-ohos/c++",
+		}
+		includedirs {
+			"$(OHOS_NDK_ROOT)/sysroot/usr/include/aarch64-linux-ohos",
+			"${OHOS_NDK_ROOT}/sysroot/usr/include",
+		}
+		buildoptions {
+			"-gcc-toolchain $(OHOS_NDK_ARM64)",
+			"--sysroot=" .. path.join("$(OHOS_NDK_ROOT)/sysroot/usr/lib", "aarch64-linux-ohos"),
+			"-target aarch64-none-linux-androideabi",
+			"-march=armv8-a",
+			"-Wunused-value",
+			"-Wundef",
+		}
+		linkoptions {
+			"-gcc-toolchain $(OHOS_NDK_ARM64)",
+			"--sysroot=" .. path.join("$(OHOS_NDK_ROOT)/sysroot/usr/lib",  "aarch64-linux-ohos"),
+			path.join("$(OHOS_NDK_ROOT)/sysroot/usr/lib", "aarch64-linux-ohos/crtbegin_so.o"),
+			path.join("$(OHOS_NDK_ROOT)/sysroot/usr/lib", "aarch64-linux-ohos/crtend_so.o"),
+			"-target aarch64-none-linux-androideabi",
+			"-march=armv8-a",
 		}
 
 	configuration { "wasm*" }
@@ -1296,6 +1329,12 @@ function strip()
 		postbuildcommands {
 			"$(SILENT) echo Stripping symbols.",
 			"$(SILENT) $(ANDROID_NDK_X86)/bin/i686-linux-android-strip -s \"$(TARGET)\""
+		}
+	
+	configuration { "ohos-arm64", "Release" }
+		postbuildcommands {
+			"$(SILENT) echo Stripping symbols.",
+			"$(SILENT) $(OHOS_NDK_ARM64)/bin/llvm-strip -s \"$(TARGET)\""
 		}
 
 	configuration { "linux-* or rpi", "Release" }
